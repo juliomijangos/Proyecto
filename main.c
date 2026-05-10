@@ -257,22 +257,146 @@ void consultar_activo(){
         }
     }
     if(encontreado==0){
-	printf("\nNo se encontro el archivo.");
+	printf("\nNo se encontro el archivo."); 
+		
 	}
 	fclose(archivo);
 }
 
 void mostrar_inventario(){
+	ActivoFijo temp; //cajita temporal para guardar el nombre del archivo
+	FILE *archivo = fopen("activos.dat", "rb");//Para abrir el archivo
 
+	if(archivo == NULL){
+		printf("No hay inventario registrado");
+	}
+	while(fread(&temp, sizeof(ActivoFijo), 1, archivo) == 1){
+		printf("ID: %s\n", temp.id);
+		printf("Nombre: %s\n", temp.nombre);
+		printf("Costo inicial: %.2lf\n", temp.costo_inicial);
+		printf("Valor residual: %.2fl\n", temp.valor_residual);
+		printf("Vida util: %d anios\n", temp.vida_util);
+
+		if(temp.estado == 1){
+			printf("Estado: Operativo");
+	} else if (temp.estado == 2){
+			printf("Estado: Mantenimiento");
+		} else if (temp.estado == 3){
+			printf("Estado: Depreciado);
+				}
+		printf("Fecha de ingreso: %s", ctime(&temp.fecha_ingreso));
+		
+			
 }
-
+		fclose(archivo); //cerrar el archivoahora explicame
+}
 void Actualizar_activo(){
+	char id_buscar[15]; //Guarda el ID del usuario
+	ActivoFijo temp; //fuarda temporalmente el activo
+	int nueo:_estado; //Guarda el nuevo estado
+	int encontrado = 0; //Dice si encontro el archivo
 
+	FILE *archivo = fopen("activos.dat", "rb+");
+
+	if(archivo = NULL){
+		printf("No existe el inventario registrado");
+		return;
+	}
+	printf("\n========= ACTUALIZAR ARCHIVO =========\n");
+
+	printf("ingrese la ID del activo: ");
+	scanf("%s", id_buscar);
+
+	while(fread(&temp, sizeof(ActivoFijo), 1, archivo) == 1){
+		if(strcmp(temp.id, id_buscar) == 0){
+			encontrado = 1;
+
+			printf("Activo encontrado: %s", temp.nombre);
+
+			printf("Seleccione el uevo estado:\n");
+			printf("1. Operativo");
+			printf("2. Mantenimiento");
+			printf("3. Depreciado");
+
+			printf("Opcion: ");
+			scanf("%d", &nuevo_estado);
+
+			temp.estado = nuevo_estado;
+
+			fseek(archivo, -sizeof(Activofijo), SEEK_CUR); //Regresar a la posicion del archivo
+
+			fwrite(&temp, sizeof(ActivoFijo), 1, archivo); //Sobreescribir el registro
+
+			printf("Activo actualizado correctamente");
+			break;
+	}
+	}
+if(encontrado == 0){
+	printf("Activo no encontrado");
+}
+	fclose(archivo);
 }
 
 
 void Monitoreo_de_ciclo_de_vida_del_activo(){
+    ActivoFijo temp; // guardamos archivo temporalmente
+    double tiempo_transcurrido;
+    double depreciacion;
+    double valor_actual;
 
+    FILE *archivo = fopen("activos.dat", "rb");
+
+    if(archivo == NULL){
+        printf("No existe inventario registrado.");
+        return;
+    }
+
+    printf("\n====== MONITOREO DE CICLO DE VIDA ======\n");
+
+    while(fread(&temp, sizeof(ActivoFijo), 1, archivo) == 1){ //Leer archivos uno por uno
+
+        // Tiempo transcurrido en años
+        tiempo_transcurrido =
+        difftime(time(NULL), temp.fecha_ingreso)
+        /
+        (365.25 * 24 * 3600);
+
+        // Calcular depreciación
+        depreciacion =
+        ((temp.costo_inicial - temp.valor_residual)
+        / temp.vida_util)
+        * tiempo_transcurrido;
+
+        // Valor actual
+        valor_actual =
+        temp.costo_inicial - depreciacion;
+
+        
+        if(valor_actual < temp.valor_residual){ // Evitar valores negativos
+            valor_actual = temp.valor_residual;
+        }
+
+        printf("Activo: %s", temp.nombre);
+        printf("ID: %s", temp.id);
+
+        printf("Tiempo en uso: %.2lf anios", tiempo_transcurrido);
+
+        printf("Valor actual: %.2lf\n", valor_actual);
+
+        // Estado del ciclo de vida
+        if(tiempo_transcurrido >= temp.vida_util){
+            printf("Estado del ciclo: Depreciado\n");
+
+        }
+        else if(tiempo_transcurrido >=
+        temp.vida_util * 0.75){
+            printf("Estado del ciclo: Cerca del fin de vida\n");
+        }
+        else{
+            printf("Estado del ciclo: Activo en funcionamiento\n");
+        }  
+    }
+    fclose(archivo);
 }
 
 void Historial_Movimiento(){
@@ -302,9 +426,7 @@ void Historial_Movimiento(){
         }
         movimientos=movimientos+1;
     }
-    printf("\n==============================================\n");
-	printf("Total de movimientos registrados: %d\n", movimientos);
-	printf("==============================================\n");
+    printf("Total de movimientos registrados: %d\n", movimientos);
 	fclose(archivo);
 }
 
