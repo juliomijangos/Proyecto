@@ -76,7 +76,7 @@ void menu_administrador(){
   int opcion;
   printf("|-------------------------------------|\n");
   printf("|--------Menu Administrador-----------|\n");
-  printf("|    1.-Registrar nuevo activo        |\n"):
+  printf("|    1.-Registrar nuevo activo        |\n");
   printf("|    2.-Generar Reporte de Inversion  |\n");
   printf("|    3.-Volver                        |\n");
   printf("|_____________________________________|\n");
@@ -88,7 +88,7 @@ void menu_administrador(){
   switch (opcion){
     case 1: altaActivo();
         break;
-    case 2: generarReporte()
+    case 2: generarReporte();
         break;
     case 3: return;
     default: 
@@ -218,7 +218,48 @@ void limpiar_buffer() {
 
 //---------------------------------funciones para operador------------------------------------------------------//
 void consultar_activo(){
-
+    char id_buscar[15];
+	int encontreado=0;
+	ActivoFijo temp;
+	FILE *archivo=fopen("activos.dat", "rb");
+	if(archivo==NULL){
+	printf("\nNo existe inventario registrado.\n");
+	return;
+	}
+    printf("\n========== CONSULTAR ACTIVO ==========\n");
+	printf("Ingrese el ID del activo: ");
+	scanf("%s", id_buscar);
+    while(fread(&temp, sizeof(ActivoFijo), 1, archivo)==1){
+        if(strcmp(temp.id, id_buscar)==0){
+            encontreado=1;
+			printf("\n========== ACTIVO ENCONTRADO ==========\n");
+			printf("ID: %s\n", temp.id);
+			printf("Nombre: %s\n", temp.nombre);
+			printf("Descripcion: %s\n", temp.descripcion);
+			printf("Costo inicial: %.2lf\n", temp.costo_inicial);
+			printf("Valor residual: %.2lf\n", temp.valor_residual);
+			printf("Vida util: %d anios\n", temp.vida_util);
+            if(temp.estado==1){
+                printf("Estado: Operativo\n");
+            }
+            else if(temp.estado==2){
+                printf("Estado: Mantenimiento\n");
+            }
+            else if(temp.estado==3){
+                printf("Estado: Depreciado\n");
+            }
+            else{
+                printf("Estado: Desconocido\n");
+            }
+            printf("Fecha de ingreso: %s", ctime(&temp.fecha_ingreso));
+			printf("=======================================\n");
+			break;
+        }
+    }
+    if(encontreado==0){
+	printf("\nNo se encontro el archivo.");
+	}
+	fclose(archivo);
 }
 
 void mostrar_inventario(){
@@ -235,5 +276,37 @@ void Monitoreo_de_ciclo_de_vida_del_activo(){
 }
 
 void Historial_Movimiento(){
-
+    ActivoFijo temp;
+	int movimientos=0;
+	FILE *archivos=fopen("activos.dat", "rb");
+    if(archivo==NULL){
+	printf("\nNo existe historial disponible.\n");
+	return;
+	}
+    printf("\n========== HISTORIAL DE MOVIMIENTOS ==========\n");
+    while(fread(&temp, sizeof(ActivoFijo), 1, archivo)==1)){
+        printf("Activo: %s\n", temp.nombre);
+		printf("ID: %s\n", temp.id);
+		printf("Fecha de ingreso: %s", ctime(&temp.fecha_ingreso));
+        if(temp.estado==1){
+            printf("Movimiento: Activo actualmente operativo.\n");
+        }
+        else if(temp.estado==2){
+            printf("Movimiento: Activo enviado a mantenimiento.\n");
+        }
+        else if(temp.estado==3){
+            printf("Movimiento: Activo depreciado.\n");
+        }
+        else{
+            printf("Movimiento: Estado desconocido.\n");
+        }
+        movimientos=movimientos+1;
+    }
+    printf("\n==============================================\n");
+	printf("Total de movimientos registrados: %d\n", movimientos);
+	printf("==============================================\n");
+	fclose(archivo);
 }
+
+
+
