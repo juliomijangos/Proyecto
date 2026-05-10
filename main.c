@@ -52,7 +52,7 @@ void menu_principal(){
         printf("2.- Operador de almacen \n");
         printf("3.-Salir \n");
         printf("Seleccion una opcion: ");
-        if(scanf("%d",&opcion) != 1 y !=2){
+        if(scanf("%d",&opcion) != 1){
             limpiar_buffer();
             continue;
         }
@@ -100,6 +100,7 @@ void menu_administrador(){
 void menu_Operador_Almacen(){
 
   int ops;
+  do{
   printf("|---------------------------------------|\n");
   printf("|--------------Menu Operador------------|\n");
   printf("|  1. Consultar activo por ID/Nombre    |\n");
@@ -130,6 +131,7 @@ void menu_Operador_Almacen(){
     default:
         printf("Opcion no valida. \n");
   }
+}while(ops !=6); 
 
 }
 
