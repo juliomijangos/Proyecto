@@ -220,7 +220,10 @@ void limpiar_buffer() {
 void consultar_activo(){
     char id_buscar[15];
 	int encontreado=0;
+	
+	// Variable temporal donde se cargará cada activo leído
 	ActivoFijo temp;
+	 // Abrimos el archivo en modo lectura binaria
 	FILE *archivo=fopen("activos.dat", "rb");
 	if(archivo==NULL){
 	printf("\nNo existe inventario registrado.\n");
@@ -229,7 +232,10 @@ void consultar_activo(){
     printf("\n========== CONSULTAR ACTIVO ==========\n");
 	printf("Ingrese el ID del activo: ");
 	scanf("%s", id_buscar);
-    while(fread(&temp, sizeof(ActivoFijo), 1, archivo)==1){
+	
+	// Recorremos el archivo registro por registro
+    while(fread(&temp, sizeof(ActivoFijo), 1, archivo)==1){   //fread()->Leer registros binarios.
+		
         if(strcmp(temp.id, id_buscar)==0){
             encontreado=1;
 			printf("\n========== ACTIVO ENCONTRADO ==========\n");
@@ -251,7 +257,7 @@ void consultar_activo(){
             else{
                 printf("Estado: Desconocido\n");
             }
-            printf("Fecha de ingreso: %s", ctime(&temp.fecha_ingreso));
+            printf("Fecha de ingreso: %s", ctime(&temp.fecha_ingreso)); // ctime()->convertir fecha a formato legible.
 			printf("=======================================\n");
 			break;
         }
@@ -400,7 +406,12 @@ void Monitoreo_de_ciclo_de_vida_del_activo(){
 }
 
 void Historial_Movimiento(){
+	/* OBJETIVO:
+     Mostrar un historial general de los activos almacenados
+     indicando su estado actual y fecha de ingreso.*/
+
     ActivoFijo temp;
+	  // Contador de movimientos
 	int movimientos=0;
 	FILE *archivos=fopen("activos.dat", "rb");
     if(archivo==NULL){
@@ -408,6 +419,7 @@ void Historial_Movimiento(){
 	return;
 	}
     printf("\n========== HISTORIAL DE MOVIMIENTOS ==========\n");
+	 // Leer cada registro del archivo
     while(fread(&temp, sizeof(ActivoFijo), 1, archivo)==1)){
         printf("Activo: %s\n", temp.nombre);
 		printf("ID: %s\n", temp.id);
