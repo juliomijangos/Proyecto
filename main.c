@@ -14,7 +14,7 @@ typedef struct {
     int estado; //de distintos tipos 1: Operativo, 2:Mantenimiento, 3: Depreciado
     time_t fecha_ingreso;
 
-}Activofijo;
+}ActivoFijo;
 
 
 //prototipo de funciones
@@ -126,7 +126,7 @@ void menu_Operador_Almacen(){
         Monitoreo_de_ciclo_de_vida_del_activo();
         break;
     case 5:
-        Historia_Movimiento();
+        Historial_Movimiento();
     case 6: return;
     default:
         printf("Opcion no valida. \n");
@@ -138,7 +138,7 @@ void menu_Operador_Almacen(){
 //-----------------------Funciones para el administrador-----------------------------//
 void altaActivo(){
     
-    ActivoFijo *nuevo = (ActivoFijo *)malloc(sizeof(Activofijo));
+    ActivoFijo *nuevo = (ActivoFijo *)malloc(sizeof(ActivoFijo));
 
     //Validacion de apuntadores
     if (nuevo == NULL){
@@ -280,7 +280,7 @@ void mostrar_inventario(){
 		printf("ID: %s\n", temp.id);
 		printf("Nombre: %s\n", temp.nombre);
 		printf("Costo inicial: %.2lf\n", temp.costo_inicial);
-		printf("Valor residual: %.2fl\n", temp.valor_residual);
+		printf("Valor residual: %.2lf\n", temp.valor_residual);
 		printf("Vida util: %d anios\n", temp.vida_util);
 
 		if(temp.estado == 1){
@@ -288,7 +288,7 @@ void mostrar_inventario(){
 	} else if (temp.estado == 2){
 			printf("Estado: Mantenimiento");
 		} else if (temp.estado == 3){
-			printf("Estado: Depreciado);
+			printf("Estado: Depreciado\n");
 				}
 		printf("Fecha de ingreso: %s", ctime(&temp.fecha_ingreso));
 		
@@ -299,12 +299,12 @@ void mostrar_inventario(){
 void Actualizar_activo(){
 	char id_buscar[15]; //Guarda el ID del usuario
 	ActivoFijo temp; //fuarda temporalmente el activo
-	int nueo:_estado; //Guarda el nuevo estado
+	int nuevo_estado; //Guarda el nuevo estado
 	int encontrado = 0; //Dice si encontro el archivo
 
 	FILE *archivo = fopen("activos.dat", "rb+");
 
-	if(archivo = NULL){
+	if(archivo == NULL){
 		printf("No existe el inventario registrado");
 		return;
 	}
@@ -329,7 +329,7 @@ void Actualizar_activo(){
 
 			temp.estado = nuevo_estado;
 
-			fseek(archivo, -sizeof(Activofijo), SEEK_CUR); //Regresar a la posicion del archivo
+			fseek(archivo, -sizeof(ActivoFijo), SEEK_CUR); //Regresar a la posicion del archivo
 
 			fwrite(&temp, sizeof(ActivoFijo), 1, archivo); //Sobreescribir el registro
 
@@ -382,10 +382,10 @@ void Monitoreo_de_ciclo_de_vida_del_activo(){
             valor_actual = temp.valor_residual;
         }
 
-        printf("Activo: %s", temp.nombre);
-        printf("ID: %s", temp.id);
+        printf("Activo: %s\n", temp.nombre);
+        printf("ID: %s\n", temp.id);
 
-        printf("Tiempo en uso: %.2lf anios", tiempo_transcurrido);
+        printf("Tiempo en uso: %.2lf anios\n", tiempo_transcurrido);
 
         printf("Valor actual: %.2lf\n", valor_actual);
 
@@ -413,14 +413,14 @@ void Historial_Movimiento(){
     ActivoFijo temp;
 	  // Contador de movimientos
 	int movimientos=0;
-	FILE *archivos=fopen("activos.dat", "rb");
+	FILE *archivo=fopen("activos.dat", "rb");
     if(archivo==NULL){
 	printf("\nNo existe historial disponible.\n");
 	return;
 	}
     printf("\n========== HISTORIAL DE MOVIMIENTOS ==========\n");
 	 // Leer cada registro del archivo
-    while(fread(&temp, sizeof(ActivoFijo), 1, archivo)==1)){
+    while(fread(&temp, sizeof(ActivoFijo), 1, archivo)==1){
         printf("Activo: %s\n", temp.nombre);
 		printf("ID: %s\n", temp.id);
 		printf("Fecha de ingreso: %s", ctime(&temp.fecha_ingreso));
