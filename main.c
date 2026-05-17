@@ -9,6 +9,8 @@ Programadores:   Julio Cesar  Mijangos Irineo
 Fecha de registro:  16 de mayo del 2026
 Version: 1.0
 
+hola ana
+
 */
 
 #include<stdio.h>
