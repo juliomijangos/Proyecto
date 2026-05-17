@@ -50,8 +50,8 @@ void Monitoreo_de_ciclo_de_vida_del_activo();
 void Historial_Movimiento();
 
 //añado nueva parte para el operador de almacen
-void eliminaractivo();
-void reporteentexto();
+void eliminarActivo();
+void reporte_de_texto();
 
 
 int main(){
@@ -63,17 +63,21 @@ int main(){
 
 void menu_principal(){
 
-    int opcion;
-    do{
-        printf("Sistemas de Gestion de Activos Fijos \n");
-        printf("1.- Modo Administrador \n");
-        printf("2.- Operador de almacen \n");
-        printf("3.-Salir \n");
-        printf("Seleccion una opcion: ");
-        if(scanf("%d",&opcion) != 1){
-            limpiar_buffer();
-            continue;
-        }
+	int opcion();
+	do{
+		printf("\n=========================================\n");
+		printf("|| Sistema de gestion de activos fijos ||\n");
+		printf("========================================");
+		printf("|| 1.- Modo administrador              ||");
+		printf("|| 2.- Operador de almacen             ||");
+		printf("|| 3.- Salir                           ||");
+		printf("========================================");
+		printf("Seleccione una opcion: ");
+
+		if(scanf("%d", &opcion) != 1){
+			limpiar_buffer();
+			continue;
+}
         switch (opcion){
             case 1: menu_administrador();
                 break;
@@ -88,29 +92,34 @@ void menu_principal(){
     } while ( opcion != 3);
 }
 
-//funcion para mostrar el menu del administador
+//funcion para mostral el menu del administrador
 void menu_administrador(){
-
+  
   int opcion;
-  printf("|-------------------------------------|\n");
-  printf("|--------Menu Administrador-----------|\n");
-  printf("|    1.-Registrar nuevo activo        |\n");
-  printf("|    2.-Generar Reporte de Inversion  |\n");
-  printf("|    3.-Volver                        |\n");
-  printf("|_____________________________________|\n");
-  printf("| Seleccione:                         |\n");
-  printf("|_____________________________________|\n");
+  printf("\n+----------------------------------+\n");
+  printf("|      Menu de administrador       |\n");
+  printf("+----------------------------------+\n");
+  printf("| 1.- Registrar nuevo activo       |");
+  printf("| 2.- Generar reporte de inversion |");
+  printf("| 3.- Dar de baja un activo        |");
+  printf("| 4.- Generar reporte de texto     |");
+  printf("| 5.- Volver                       |");
+  printf("Seleccione una opcion: ");
   scanf("%d", &opcion);
   limpiar_buffer();
 
   switch (opcion){
-    case 1: altaActivo();
-        break;
-    case 2: generarReporte();
-        break;
-    case 3: return;
-    default: 
-        printf("Opcion no valida. \n");
+	  case 1: altaActivo();
+	  break;
+	  case 2: generarReporte();
+	  break;
+	  case 3: eliminarActivo();
+	  break;
+	  case 4: reporte_de_texto();
+	  break;
+	  case 5: return;
+	  default:
+	  printf("\n[!] Opcion no valida.\n");
   }
 }
 
@@ -119,15 +128,17 @@ void menu_Operador_Almacen(){
 
   int ops;
   do{
-  printf("|---------------------------------------|\n");
-  printf("|--------------Menu Operador------------|\n");
+  printf("\n+---------------------------------------|\n");
+  printf("|            Menu de Operador           |\n");
+  printf("+---------------------------------------+\n");
   printf("|  1. Consultar activo por ID/Nombre    |\n");
   printf("|  2. Mostrar todo el inventario        |\n");
   printf("|  3. Actualizar estado de activo       |\n");
   printf("|  4. Monitoreo de ciclo de vida        |\n");
   printf("|  5. Ver historial de movimientos      |\n");
   printf("|  6. Volver                            |\n");
-  printf("Opcion: ");
+  printf("+---------------------------------------+\n");
+  printf("Seleccione una opcion: ");
   scanf("%d", &ops);
 
   switch (ops){
@@ -147,7 +158,7 @@ void menu_Operador_Almacen(){
         Historial_Movimiento();
     case 6: return;
     default:
-        printf("Opcion no valida. \n");
+        printf("\n[!]Opcion no valida. \n");
   }
 }while(ops !=6); 
 
@@ -233,14 +244,49 @@ void limpiar_buffer() {
 
 //en esta funcion el administrador podra borrar activos que ya no tengan seguimiento en el  mercado
 void eliminaractivo(){
+	char id_buscar[15];
+	ArchivoFijo temp;
+	int encontrado = 0;
 
+	FILE *archivo_open = fopen ("activos.dat", "rb+");
+	if(archivo == NULL) {
+		printf("\n[!] No existe el inventario registrado.\n");
+		return;
+	}
+
+	printf("\n---------- Eliminar activo ----------\n");
+	printf("Ingrese la ID del activo a eliminar: ");
+	scanf("%s", id_buscar);
+
+	while (fread(&temp, sizeof(ActivoFijo), 1, archivo) == 1) {
+		if (strcmp(temp.id, id_buscar) == 0) {
+			encontrado = 1;
+			
+			if(temp.estado == 4){
+				printf("\n[!] El activo '%s' ya se ha dado de baja.\n", temp.nombre);
+				break;
+			}
+
+			printf("\n[*] Activo encontrado: %s\n", temp.nombre);
+
+			//Eliminacion logica
+			temp.estado = 4;
+
+			fseek(archivo, -sizeof(ActivoFijo), SEEK_CUR); //Regresa a la posicion del activo
+			fwrite(&temp, sizeof(ActivoFijo), 1, archivo); //Sobreescribe el registro
+
+			printf("[*] Activo eliminado exitosamente del sistema. \n");
+			break;
+		}
 }
 
+if(encontrado == 0) {
+printf("\n[!] Activo no encontrado.\n");
+}
 
-//en esta funcion tambien generara un .txt con los activos registrados 
-void reporteentexto();
-
-
+printf("----------------------------------------------------------------------");
+fclose(archivo);
+}
 
 
 //-----------------------------------------------------------------------------------------------------------------------------------------///
