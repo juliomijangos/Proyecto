@@ -1,3 +1,16 @@
+/*DOCUMENTACION DEL CODIGO:
+Nombre:  Proyecto-Sistemas SAGA
+Compilador:  Dev C++
+Programadores:   Julio Cesar  Mijangos Irineo
+                 Anna Fernanda Orozco Pozos
+                 Daniel Salcedo Miranda
+                 ELian Guillermo Pereira Canul
+                 Perla Noemi Canche Uicab
+Fecha de registro:  16 de mayo del 2026
+Version: 1.0
+
+*/
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
@@ -36,6 +49,10 @@ void Actualizar_activo();
 void Monitoreo_de_ciclo_de_vida_del_activo();
 void Historial_Movimiento();
 
+//añado nueva parte para el operador de almacen
+void eliminaractivo();
+void reporteentexto();
+
 
 int main(){
 
@@ -45,6 +62,7 @@ int main(){
 }
 
 void menu_principal(){
+
     int opcion;
     do{
         printf("Sistemas de Gestion de Activos Fijos \n");
@@ -212,6 +230,18 @@ void limpiar_buffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
+
+//en esta funcion el administrador podra borrar activos que ya no tengan seguimiento en el  mercado
+void eliminaractivo(){
+
+}
+
+
+//en esta funcion tambien generara un .txt con los activos registrados 
+void reporteentexto();
+
+
+
 
 //-----------------------------------------------------------------------------------------------------------------------------------------///
 
@@ -441,6 +471,12 @@ void Historial_Movimiento(){
     printf("Total de movimientos registrados: %d\n", movimientos);
 	fclose(archivo);
 }
+
+
+//en esta funcion tambien generara un .txt con los activos registrados 
+void reporteentexto();
+
+
 
 
 
