@@ -10,7 +10,7 @@
                 ELian Guillermo Pereira Canul
                 Perla Noemi Canche Uicab
   Fecha:        16 de mayo del 2026
-  Version:      2.0
+  Version:      1.0
 
   DESCRIPCION GENERAL DEL SISTEMA:
   SAGA es un sistema de gestion de activos fijos. Permite
@@ -43,8 +43,8 @@
    typedef permite usar "ActivoFijo" como nombre de tipo
    directamente, sin escribir "struct" cada vez. */
 typedef struct {
-    char   id[15];           /* Identificador unico, ej: "ACT001" */
-    char   nombre[50];       /* Nombre descriptivo, ej: "Laptop Dell" */
+    char   id[15];           /* Identificador unico */
+    char   nombre[50];       /* Nombre descriptivo */
     char   descripcion[100]; /* Descripcion adicional del activo */
     double costo_inicial;    /* Precio de compra original */
     double valor_residual;   /* Valor minimo al que puede llegar al depreciarse */
@@ -54,9 +54,9 @@ typedef struct {
                                 2 = En mantenimiento
                                 3 = Depreciado
                                 4 = Dado de baja (eliminacion logica) */
-    time_t fecha_ingreso;    /* Fecha en que fue registrado en el sistema.
-                                time_t almacena segundos desde el 1 ene 1970 */
-} ActivoFijo;
+    time_t fecha_ingreso;    /* Fecha en que fue registrado en el sistema.*/
+                              
+    } ActivoFijo;
 
 /* ---- RegistroMantenimiento ----
    Cada vez que un activo recibe mantenimiento, se crea
@@ -89,6 +89,8 @@ typedef struct {
 void menu_principal();
 void menu_administrador();
 void menu_Operador_Almacen();
+
+/*Menus para ambos perfiles*/
 void menu_mantenimiento();
 void menu_estadisticas();
 
@@ -113,12 +115,12 @@ void registrar_mantenimiento();
 void ver_historial_mantenimiento();
 void activos_en_mantenimiento();
 
-/* Funciones de estadisticas */
+/* Funciones de estadisticas para ambo perfiles */
 void estadisticas_generales();
 void resumen_depreciacion();
 void activos_proximos_depreciar();
 
-/* Funciones de bitacora */
+/* Funciones de bitacora para ambos perfiles */
 void registrar_evento(const char *id_activo, const char *usuario, const char *accion);
 void ver_bitacora();
 
@@ -172,7 +174,7 @@ void menu_principal(){
            scanf devuelve 0 (fallo). En ese caso limpiamos
            el buffer y repetimos el ciclo con "continue". */
         if(scanf("%d", &opcion) != 1){
-            limpiar_buffer();
+            limpiar_buffer(); //llamada a una funcion de apoyo
             continue;
         }
         limpiar_buffer(); /* Limpiar el '\n' que queda en el buffer tras scanf */
@@ -198,7 +200,7 @@ void menu_administrador(){
 
     do{
         printf("\n");
-        imprimir_separador('+', 38);
+        imprimir_separador('+', 38);  //llamada la funcion de apoyo
         printf("|      Menu de Administrador         |\n");
         imprimir_separador('+', 38);
         printf("| 1.- Registrar nuevo activo         |\n");
@@ -213,6 +215,7 @@ void menu_administrador(){
         scanf("%d", &opcion);
         limpiar_buffer();
 
+        //en base la opcion del perfil se llamara una funcion
         switch(opcion){
             case 1: altaActivo();           break;
             case 2: generarReporte();       break;
@@ -440,7 +443,7 @@ void eliminarActivo(){
 
     char id_buscar[15];
     ActivoFijo temp;
-    int encontrado = 0;
+    int encontrado = 0; //variable para busqueda
 
     /* "rb+" = leer Y escribir en binario (sin truncar el archivo) */
     FILE *archivo = fopen("activos.dat", "rb+");
@@ -740,7 +743,7 @@ void Actualizar_activo(){
     printf("\n========= ACTUALIZAR ESTADO =========\n");
     printf("Ingrese la ID del activo: ");
     scanf("%s", id_buscar);
-    limpiar_buffer();
+    limpiar_buffer(); //llamada a funcion de apoyo 
 
     while(fread(&temp, sizeof(ActivoFijo), 1, archivo) == 1){
         if(strcmp(temp.id, id_buscar) == 0){
@@ -800,7 +803,7 @@ void Monitoreo_de_ciclo_de_vida_del_activo(){
         if(temp.estado == 4) continue;
 
         /* difftime devuelve segundos entre dos fechas.
-           Dividimos entre segundos en un anio para obtener anios. */
+           Dividimos entre segundos en un año para obtener anios. */
         double tiempo = difftime(time(NULL), temp.fecha_ingreso)
                         / (365.25 * 24 * 3600);
 
@@ -903,7 +906,7 @@ void filtrar_por_estado(){
 
 
 /* ==============================================================
-   SECCION 7: FUNCIONES DE MANTENIMIENTO
+   SECCION 7: FUNCIONES DE MANTENIMIENTO 
    ============================================================== */
 
 /* ---- registrar_mantenimiento ----
@@ -1267,7 +1270,7 @@ const char* estado_texto(int estado){
 /* ---- calcular_valor_actual ----
    Calcula cuanto vale hoy un activo usando depreciacion
    lineal (metodo de linea recta):
-     Depreciacion por anio = (Costo - Valor residual) / Vida util
+     Depreciacion por año = (Costo - Valor residual) / Vida util
      Valor actual = Costo - (Depreciacion anual * Tiempo transcurrido)
    Si el valor calculado cae por debajo del valor residual,
    se usa el valor residual como piso minimo.
