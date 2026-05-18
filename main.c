@@ -130,7 +130,7 @@ void pausar();
 const char* estado_texto(int estado);
 double calcular_valor_actual(ActivoFijo *a);
 double calcular_depreciacion_anual(ActivoFijo *a);
-void imprimir_separador(char c, int n);
+void imprimir_separador(char c, int n);  
 
 
 /* ==============================================================
