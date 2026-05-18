@@ -1046,7 +1046,7 @@ void activos_en_mantenimiento(){
 
 /* ---- estadisticas_generales ----
    Recorre todo el inventario y acumula contadores y sumas.
-   Al final imprime un resumen financiero y operativo. */
+   Como tambien al final imprime un resumen financiero y operativo.  */
 void estadisticas_generales(){
     ActivoFijo temp;
     /* Inicializamos todos los contadores en 0 */
